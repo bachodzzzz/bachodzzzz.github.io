@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stitches | Collections</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">STITCHES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="stylist.html">AI Stylist</a>
+            <a href="collections.html" class="active">Collections</a>
+            <a href="calendar.html">Planner</a>
+        </div>
+    </nav>
+
+    <section style="margin-top: 80px;">
+        <div class="container">
+            <div style="text-align: center; margin-bottom: 4rem;">
+                <!-- Promo Banner -->
+                <img src="assets/images/promo-vertical.jpg" alt="New Season Drop"
+                    style="max-height: 400px; width: auto; margin: 0 auto 2rem auto; border: 1px solid var(--color-accent);">
+                <h1 class="text-gold">Curated Collections</h1>
+            </div>
+
+            <div class="grid grid-3">
+                <!-- Static Collection Items -->
+                <div class="collection-card">
+                    <div class="card-img"
+                        style="height: 300px; background: #222; display: flex; align-items: center; justify-content: center; color: #555;">
+                        Mockup 1</div>
+                    <div class="card-content" style="padding: 1.5rem; background: #111;">
+                        <h3 class="text-gold">Summer Breeze</h3>
+                        <p style="margin-bottom: 1rem;">Lightweight fabrics for the heat.</p>
+                        <p style="font-size: 0.9rem; color: #888;">Available at: <strong>H&M</strong></p>
+                    </div>
+                </div>
+
+                <div class="collection-card">
+                    <div class="card-img"
+                        style="height: 300px; background: #222; display: flex; align-items: center; justify-content: center; color: #555;">
+                        Mockup 2</div>
+                    <div class="card-content" style="padding: 1.5rem; background: #111;">
+                        <h3 class="text-gold">Winter Layers</h3>
+                        <p style="margin-bottom: 1rem;">Stay warm without losing style.</p>
+                        <p style="font-size: 0.9rem; color: #888;">Available at: <strong>Uniqlo</strong></p>
+                    </div>
+                </div>
+
+                <div class="collection-card">
+                    <div class="card-img"
+                        style="height: 300px; background: #222; display: flex; align-items: center; justify-content: center; color: #555;">
+                        Mockup 3</div>
+                    <div class="card-content" style="padding: 1.5rem; background: #111;">
+                        <h3 class="text-gold">Evening Gala</h3>
+                        <p style="margin-bottom: 1rem;">Sophisticated cuts for special nights.</p>
+                        <p style="font-size: 0.9rem; color: #888;">Available at: <strong>Nordstrom</strong></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- History Section -->
+    <section>
+        <div class="container">
+            <h2 class="text-center">Your Generated History</h2>
+            <div id="history-grid" class="grid grid-3" style="margin-top: 2rem;">
+                <!-- Populated by JS -->
+                <p style="grid-column: 1/-1; text-align: center; color: #555;">No history yet. Go to AI Stylist!</p>
+            </div>
+        </div>
+    </section>
+
+    <footer style="margin-top: auto;">
+        <div class="container" style="text-align: center;">
+            <p style="color: var(--color-text-muted);">&copy; 2024 Stitches AI Stylist.</p>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Load History from Memory
+        const historyGrid = document.getElementById('history-grid');
+        const historyData = JSON.parse(localStorage.getItem('stitches_history') || '[]');
+
+        if (historyData.length > 0) {
+            historyGrid.innerHTML = ''; // Clear empty message
+            historyData.forEach(item => {
+                const div = document.createElement('div');
+                div.style.background = '#111';
+                div.style.padding = '1rem';
+                div.style.border = '1px solid rgba(212, 175, 55, 0.2)';
+                div.innerHTML = `
+                    <h4 class="text-gold">${item.title}</h4>
+                    <p style="font-size: 0.9rem;">Category: ${item.category}</p>
+                    <p style="font-size: 0.8rem; color: #666;">${item.date}</p>
+                `;
+                historyGrid.appendChild(div);
+            });
+        }
+    </script>
+</body>
+
+</html>

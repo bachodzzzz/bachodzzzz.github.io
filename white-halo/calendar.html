@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stitches | Planner</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .split-view {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: var(--spacing-md);
+            height: calc(100vh - 100px);
+            margin-top: 80px;
+            padding: var(--spacing-md);
+        }
+
+        .tools-panel {
+            background: rgba(255, 255, 255, 0.05);
+            padding: var(--spacing-md);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+            overflow-y: auto;
+        }
+
+        .calendar-container {
+            background: #fff;
+            height: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .event-item {
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .event-date {
+            color: var(--color-accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 768px) {
+            .split-view {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .calendar-container {
+                height: 500px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="logo">STITCHES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="stylist.html">AI Stylist</a>
+            <a href="collections.html">Collections</a>
+            <a href="calendar.html" class="active">Planner</a>
+        </div>
+    </nav>
+
+    <div class="split-view">
+        <div class="tools-panel">
+            <h2 class="text-gold">Upcoming Occasions</h2>
+            <form id="occasion-form" style="margin: 2rem 0;">
+                <div style="margin-bottom: 1rem;">
+                    <label>Event Name</label>
+                    <input type="text" id="event-name" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
+                        required>
+                </div>
+                <div style="margin-bottom: 1rem;">
+                    <label>Date</label>
+                    <input type="date" id="event-date" style="width: 100%; padding: 0.5rem; margin-top: 0.5rem;"
+                        required>
+                </div>
+                <button type="submit" class="btn btn-outline" style="width: 100%;">Mark Occasion</button>
+            </form>
+
+            <div id="events-list">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <!-- Embedding Public Google Calendar (Using a generic one for demo or user specific if auth was present, but static for now) -->
+            <iframe
+                src="https://calendar.google.com/calendar/embed?src=en.usa%23holiday%40group.v.calendar.google.com&ctz=America%2FNew_York"
+                style="border: 0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Simple Event Manager
+        const eventForm = document.getElementById('occasion-form');
+        const eventsList = document.getElementById('events-list');
+
+        function renderEvents() {
+            const events = JSON.parse(localStorage.getItem('stitches_events') || '[]');
+            eventsList.innerHTML = events.map(e => `
+                <div class="event-item">
+                    <div class="event-date">${e.date}</div>
+                    <h3>${e.name}</h3>
+                    <a href="stylist.html" style="font-size: 0.8rem; text-decoration: underline; color: #888;">Find outfit</a>
+                </div>
+            `).join('');
+        }
+
+        eventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const name = document.getElementById('event-name').value;
+            const date = document.getElementById('event-date').value;
+
+            const events = JSON.parse(localStorage.getItem('stitches_events') || '[]');
+            events.push({ name, date });
+            localStorage.setItem('stitches_events', JSON.stringify(events));
+
+            renderEvents();
+            eventForm.reset();
+        });
+
+        renderEvents();
+    </script>
+</body>
+
+</html>

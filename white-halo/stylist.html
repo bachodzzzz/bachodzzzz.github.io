@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stitches | AI Stylist</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .split-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 80px);
+            /* Adjust for nav */
+            margin-top: 80px;
+        }
+
+        .input-section {
+            padding: var(--spacing-md);
+            border-right: 1px solid rgba(212, 175, 55, 0.2);
+            overflow-y: auto;
+        }
+
+        .result-section {
+            padding: var(--spacing-md);
+            background: var(--color-bg-light);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .form-group {
+            margin-bottom: var(--spacing-md);
+        }
+
+        label {
+            display: block;
+            margin-bottom: var(--spacing-xs);
+            color: var(--color-accent);
+            font-weight: 600;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--color-white);
+            border-radius: 4px;
+            font-family: var(--font-main);
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: var(--color-accent);
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            border: 2px dashed rgba(212, 175, 55, 0.5);
+            cursor: pointer;
+            transition: var(--transition-fast);
+        }
+
+        .file-upload-label:hover {
+            border-color: var(--color-accent);
+            background: rgba(212, 175, 55, 0.05);
+        }
+
+        /* Result Card */
+        .outfit-card {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--color-accent);
+            padding: 2rem;
+            max-width: 400px;
+            width: 100%;
+            display: none;
+            /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .split-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .input-section {
+                border-right: none;
+                border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">STITCHES</div>
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="stylist.html" class="active">AI Stylist</a>
+            <a href="collections.html">Collections</a>
+            <a href="calendar.html">Planner</a>
+        </div>
+    </nav>
+
+    <div class="split-layout">
+        <!-- User Input -->
+        <section class="input-section">
+            <h2 class="text-gold">Style Preferences</h2>
+            <p style="margin-bottom: 2rem;">Tell us what you're looking for, or upload a reference.</p>
+
+            <form id="stylist-form">
+                <div class="form-group">
+                    <label>Occasion / Category</label>
+                    <select id="category">
+                        <option value="casual">Casual Streetwear</option>
+                        <option value="formal">Formal Event</option>
+                        <option value="business">Business Professional</option>
+                        <option value="party">Night Out / Party</option>
+                        <option value="gym">Athleisure</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reference URL (Optional)</label>
+                    <input type="url" placeholder="Paste a link to a style you like...">
+                </div>
+
+                <div class="form-group">
+                    <label>Upload Inspiration</label>
+                    <label class="file-upload-label">
+                        <span style="font-size: 2rem;">+</span>
+                        <span>Click to upload image</span>
+                        <input type="file" id="image-upload" accept="image/*" class="hidden">
+                    </label>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Notes</label>
+                    <textarea rows="4" placeholder="Any specific colors or vibes?"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Generated Look</button>
+            </form>
+        </section>
+
+        <!-- AI Output -->
+        <section class="result-section">
+            <div id="ai-placeholder">
+                <h3 style="color: var(--color-text-muted);">Your style evolution awaits...</h3>
+                <p>Fill out the form to generate your custom look.</p>
+            </div>
+
+            <!-- Loader for AI Thinking -->
+            <div id="ai-loader" class="hidden">
+                <div class="spinner"></div>
+                <p style="margin-top: 1rem; color: var(--color-accent);">AI is analyzing trends...</p>
+            </div>
+
+            <!-- Result -->
+            <div id="result-card" class="outfit-card">
+                <h3 class="text-gold" id="result-title">Urban Chic</h3>
+                <p id="result-desc">A perfect blend of comfort and style. Ideal for a day out in the city.</p>
+                <div
+                    style="margin: 2rem 0; height: 200px; background: #222; display: flex; align-items: center; justify-content: center;">
+                    <!-- Placeholder for generated outfit image -->
+                    <span style="color: #666;">[ Outfit Visual ]</span>
+                </div>
+                <h4 class="text-gold" style="font-size: 1rem; margin-bottom: 0.5rem;">Buy it at:</h4>
+                <a href="#" id="platform-link" class="btn btn-outline"
+                    style="font-size: 0.8rem; padding: 0.5rem 1rem;">ASOS / ZARA</a>
+                <div style="margin-top: 1rem;">
+                    <button class="btn" style="border: none; color: #aaa; font-size: 0.8rem;">Save to
+                        Collection</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="js/script.js"></script>
+    <script>
+        // Inline Simple Logic for Demo
+        document.getElementById('stylist-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const placeholder = document.getElementById('ai-placeholder');
+            const loader = document.getElementById('ai-loader');
+            const result = document.getElementById('result-card');
+            const cat = document.getElementById('category').value;
+
+            placeholder.classList.add('hidden');
+            loader.classList.remove('hidden');
+            result.style.display = 'none';
+
+            // Simulate AI Delay
+            setTimeout(() => {
+                loader.classList.add('hidden');
+                result.style.display = 'block';
+
+                // Update text based on basic logic
+                const titleMap = {
+                    'casual': 'Urban Relaxed Fit',
+                    'formal': 'Midnight Gala Suit',
+                    'business': 'Executive Sharp',
+                    'party': 'Golden Hour Glam',
+                    'gym': 'Performance Tech'
+                };
+
+                document.getElementById('result-title').innerText = titleMap[cat] || 'Custom Style';
+
+                // Save to local storage (Temporary Memory)
+                const history = JSON.parse(localStorage.getItem('stitches_history') || '[]');
+                history.push({
+                    category: cat,
+                    date: new Date().toLocaleDateString(),
+                    title: titleMap[cat]
+                });
+                localStorage.setItem('stitches_history', JSON.stringify(history));
+
+            }, 2000);
+        });
+    </script>
+</body>
+
+</html>
